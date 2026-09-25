@@ -212,6 +212,7 @@
     border-radius: 12px;
     padding: 22px;
     margin-top: 24px;
+    margin-bottom: 28px;
   }
   .promo.show { display: block; }
   .promo-title {
@@ -289,8 +290,8 @@ const questions = [
   {
     title: "以下程式的執行結果為何？",
     code: `print(not True or False and True)`,
-    options: ["True", "False", "None", "SyntaxError"],
-    answer: 1,
+    options: ["True", "None", "False", "SyntaxError"],
+    answer: 2,
     explain: `Python 運算子優先順序：<code>not</code> &gt; <code>and</code> &gt; <code>or</code>。<br>
       先算 <code>not True</code> → <code>False</code>；<br>
       再算 <code>False and True</code> → <code>False</code>（<code>and</code> 比 <code>or</code> 優先結合）；<br>
@@ -299,8 +300,8 @@ const questions = [
   {
     title: "以下程式的執行結果為何？",
     code: `print(-7 // 2, -7 % 2)`,
-    options: ["-3 -1", "-4 1", "-3 1", "-4 -1"],
-    answer: 1,
+    options: ["-3 -1", "-3 1", "-4 -1", "-4 1"],
+    answer: 3,
     explain: `重點：只要「除數」是正的，Python 的 <code>%</code> 餘數結果「永遠是正的」（不會是負數）。<br>
       這跟 C/Java 不一樣——那些語言的餘數符號會跟著「被除數」走，例如 C 語言 <code>-7 % 2</code> 會得到 <code>-1</code>。<br>
       Python 的規則是：餘數符號永遠跟「除數」一致。這裡除數 <code>2</code> 是正的，所以餘數只能是 <code>0</code> 或 <code>1</code>，絕不會是負數。<br>
@@ -330,8 +331,8 @@ change()
 print(x, end=' ')
 change_global()
 print(x, end=' ')`,
-    options: ["1 1", "1 2", "2 2", "2 1"],
-    answer: 1,
+    options: ["1 1", "2 2", "1 2", "2 1"],
+    answer: 2,
     explain: `<code>change()</code> 內的 <code>x = 2</code> 會建立一個「區域變數」x，不會影響全域的 x，所以呼叫後第一個 <code>print(x)</code> 仍是 <code>1</code>。<br>
       <code>change_global()</code> 內宣告了 <code>global x</code>，表示要修改的是全域變數 x，所以呼叫後第二個 <code>print(x)</code> 變成 <code>2</code>。<br>
       注意：<code>print()</code> 預設結尾是換行（<code>end='\\n'</code>），這裡把它改成 <code>end=' '</code>，代表印完後面接一個空格而不是換行，所以兩次 <code>print(x)</code> 的結果會印在「同一行」，中間用空格隔開。<br>
@@ -376,8 +377,8 @@ print(a)`,
     title: "若使用者輸入 6，以下程式的輸出為何？",
     code: `n = input()
 print(n * 3)`,
-    options: ["18", "666", "6 6 6", "TypeError"],
-    answer: 1,
+    options: ["18", "216", "TypeError", "666"],
+    answer: 3,
     explain: `<code>input()</code> 的回傳值一律是「字串（str）」型態，即使使用者輸入的是數字字元。<br>
       所以 <code>n</code> 其實是字串 <code>'6'</code>，而字串乘以整數會重複該字串。<br>
       <code>'6' * 3</code> 結果是字串 <code>'666'</code>，<code>print</code> 印出時不會顯示引號，畫面上會看到 <code>666</code>。`
@@ -386,8 +387,8 @@ print(n * 3)`,
     title: "以下程式的執行結果為何？",
     code: `s = "Christmas"
 print(s[1:4])`,
-    options: ["'hri'", "'Chri'", "'hris'", "'ris'"],
-    answer: 0,
+    options: ["'Chri'", "'ris'", "'hri'", "'hris'"],
+    answer: 2,
     explain: `字串索引從 0 開始：<code>C(0) h(1) r(2) i(3) s(4) t(5) m(6) a(7) s(8)</code>。<br>
       切片語法 <code>[start:stop]</code> 的規則是「包含 start，不包含 stop」，長度剛好是 <code>stop - start</code>。<br>
       <code>s[1:4]</code> 表示從索引 1 取到索引 3（因為 4 不包含），也就是 <code>h, r, i</code> 三個字元。<br>
