@@ -502,6 +502,8 @@ function grade() {
   submitBtn.style.display = 'none';
   retryBtn.style.display = 'inline-block';
   promo.classList.add('show');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 submitBtn.addEventListener('click', grade);
