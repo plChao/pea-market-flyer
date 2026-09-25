@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>實作技巧整理</title>
+<link rel="icon" type="image/png" href="../assets/icon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #1f2430;
+    --muted: #6b7280;
+    --border: #e3e5ea;
+    --primary: #3b5bdb;
+    --primary-dark: #2f4bc0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 24px 16px 80px;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  header .logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    vertical-align: middle;
+    margin-right: 8px;
+    object-fit: cover;
+  }
+  header h1 {
+    font-size: 1.5rem;
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  header p {
+    color: var(--muted);
+    margin: 0;
+    font-size: 0.92rem;
+  }
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 32px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary);
+  }
+  .section-title:first-of-type { margin-top: 0; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .item-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .item-num {
+    color: var(--primary);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .item-note {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 8px 0 0;
+  }
+  pre.code {
+    background: #282c34;
+    padding: 12px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.86rem;
+    margin: 10px 0 0;
+  }
+  pre.code code {
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    white-space: pre;
+    background: transparent;
+    padding: 0;
+    color: #abb2bf;
+  }
+  code.inline {
+    background: rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+  }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 32px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><img class="logo" src="../assets/icon.png" alt="豌豆程式">初級 / 中級實作題技巧整理</h1>
+  </header>
+
+  <div class="section-title">初級實作技巧</div>
+
+  <div class="card">
+    <div class="item-title"><span class="item-num">1.</span><span>將一行空格隔開的數字轉換成數字 list</span></div>
+    <pre class="code"><code class="language-python">numList = [int(x) for x in input().split()]</code></pre>
+    <p class="item-note">先用 <code class="inline">input().split()</code> 依空白切成字串 list，再用 list comprehension 把每個元素轉成 <code class="inline">int</code>。</p>
+  </div>
+
+  <div class="card">
+    <div class="item-title"><span class="item-num">2.</span><span>增進輸入效率</span></div>
+    <pre class="code"><code class="language-python">import sys
+input = sys.stdin.readline</code></pre>
+    <p class="item-note">把內建的 <code class="inline">input</code> 直接改綁成 <code class="inline">sys.stdin.readline</code>，之後程式裡照樣呼叫 <code class="inline">input()</code> 即可，讀取大量輸入時速度明顯較快。注意 <code class="inline">sys.stdin.readline</code> 讀到的字串結尾會多一個 <code class="inline">\n</code>，通常搭配 <code class="inline">.strip()</code> 使用就不受影響。</p>
+  </div>
+
+  <div class="card">
+    <div class="item-title"><span class="item-num">3.</span><span>不確定行數的輸入</span></div>
+    <pre class="code"><code class="language-python">import sys
+# 這裡可以使用 input 吃一些資料
+for line in sys.stdin:
+    line = line.strip()  # sys.stdin 吃進來的右邊會自帶 \n，需要去除
+    # 處理 line，這裡之後就不能用 input 了</code></pre>
+    <p class="item-note">當題目沒有明確告知輸入行數時，直接用 <code class="inline">for line in sys.stdin</code> 逐行讀到 EOF 為止。要注意一旦開始用這種方式讀取，就不要再混用 <code class="inline">input()</code>，避免搶到同一份輸入資料造成錯亂。</p>
+  </div>
+
+  <div class="section-title">中級題本</div>
+
+  <div class="card">
+    <div class="item-title"><span class="item-num">1.</span><span>反轉字串</span></div>
+    <pre class="code"><code class="language-python">s = "hello"
+print(s[::-1])  # 'olleh'</code></pre>
+    <p class="item-note">切片語法 <code class="inline">[start:stop:step]</code> 中，<code class="inline">step</code> 設為 <code class="inline">-1</code> 代表從尾端往前取，省略 <code class="inline">start</code>、<code class="inline">stop</code> 就是整個字串反著走一遍，是最簡潔的反轉字串寫法。</p>
+  </div>
+
+  <div class="card">
+    <div class="item-title"><span class="item-num">2.</span><span>正確的 n*m 空陣列初始方式</span></div>
+    <pre class="code"><code class="language-python">n, m = 3, 4
+
+# 錯誤寫法：每一列其實是同一個 list 的參考（淺拷貝陷阱）
+wrong = [[0] * m] * n
+wrong[0][0] = 99
+print(wrong)  # [[99, 0, 0, 0], [99, 0, 0, 0], [99, 0, 0, 0]]
+
+# 正確寫法：用 list comprehension，讓每一列都是獨立產生的新 list
+grid = [[0] * m for _ in range(n)]
+grid[0][0] = 99
+print(grid)   # [[99, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]</code></pre>
+    <p class="item-note"><code class="inline">[[0] * m] * n</code> 只會建立「一個」內層 list，外層 n 個位置全部指向同一份物件，改一個等於全改。改用 <code class="inline">[[0] * m for _ in range(n)]</code>，每次迴圈都重新產生一個新的內層 list，才能確保每一列互相獨立。</p>
+  </div>
+
+  <div class="card">
+    <div class="item-title"><span class="item-num">3.</span><span>將陣列 n*m 吃進二維陣列方式</span></div>
+    <p class="item-note">輸入格式範例：</p>
+    <pre class="code"><code class="language-python">3 4
+1 2 3 4
+8 2 3 2
+3 2 3 4</code></pre>
+    <p class="item-note">寫法一：用 for 迴圈搭配初級技巧 1 的「一行數字轉 list」寫法，一行一行讀進來，可讀性較高，也方便在迴圈中對每一列額外做處理。</p>
+    <pre class="code"><code class="language-python">n, m = [int(x) for x in input().split()]
+
+grid = []
+for _ in range(n):
+    row = [int(x) for x in input().split()]  # 初級技巧 1
+    grid.append(row)</code></pre>
+    <p class="item-note">寫法二：把整個 for 迴圈濃縮成一行 list comprehension，效果相同，寫起來更精簡。</p>
+    <pre class="code"><code class="language-python">n, m = map(int, input().split())
+grid = [list(map(int, input().split())) for _ in range(n)]</code></pre>
+    <p class="item-note">兩種寫法都是：第一行讀入 <code class="inline">n</code>（列數）與 <code class="inline">m</code>（欄數），接著讀 n 行，每行轉成整數 list 後組成二維陣列 <code class="inline">grid</code>。</p>
+  </div>
+
+  <footer>豌豆APCS程式教育</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script>
+  document.querySelectorAll('code.language-python').forEach((el) => {
+    if (window.hljs) hljs.highlightElement(el);
+  });
+</script>
+</body>
+</html>
