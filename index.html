@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Python 觀念題猜題</title>
+<title>Python 程式試讀猜題</title>
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <style>
   :root {
     --bg: #f5f6f8;
@@ -35,9 +37,30 @@
     text-align: center;
     margin-bottom: 28px;
   }
+  header .logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    vertical-align: middle;
+    margin-right: 8px;
+    object-fit: cover;
+  }
   header h1 {
     font-size: 1.6rem;
     margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .option .console {
+    display: block;
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    font-size: 0.88em;
+    line-height: 1.4;
+    background: rgba(0,0,0,0.06);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-top: 2px;
   }
   header p {
     color: var(--muted);
@@ -66,14 +89,17 @@
   }
   pre.code {
     background: #282c34;
-    color: #e6e6e6;
     padding: 12px 14px;
     border-radius: 8px;
     overflow-x: auto;
     font-size: 0.88rem;
     margin: 10px 0 14px;
+  }
+  pre.code code {
     font-family: "SFMono-Regular", Consolas, Menlo, monospace;
     white-space: pre;
+    background: transparent;
+    padding: 0;
   }
   .options {
     display: flex;
@@ -178,6 +204,47 @@
     background: #eef1ff;
     color: var(--primary-dark);
   }
+  .promo {
+    display: none;
+    text-align: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    margin-top: 24px;
+  }
+  .promo.show { display: block; }
+  .promo-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0 0 14px;
+  }
+  .promo-sub {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin: 18px 0 10px;
+  }
+  .promo-social {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .promo-btn {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding: 10px 22px;
+    border-radius: 999px;
+    color: #fff;
+    transition: opacity .15s;
+  }
+  .promo-btn:hover { opacity: 0.88; }
+  .promo-line { background: #06c755; }
+  .promo-threads { background: #000000; }
+  .promo-ig {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  }
   footer {
     text-align: center;
     color: var(--muted);
@@ -189,11 +256,21 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>🐍 Python 觀念題猜題</h1>
-    <p>共 8 題單選題，作答完畢後按「送出答案」查看詳解</p>
+    <h1><img class="logo" src="assets/icon.png" alt="豌豆程式">豌豆程式 x Python 程式試讀猜題</h1>
+    <p>共 9 題單選題，作答完畢後按「送出答案」查看詳解</p>
   </header>
 
   <div id="score"></div>
+
+  <div id="promo" class="promo">
+    <p class="promo-title">🎁 領取「初級 / 中級實作題技巧整理」</p>
+    <a class="promo-btn promo-line" href="https://line.me/R/ti/p/@597ugdlr" target="_blank" rel="noopener">加 LINE 好友領取</a>
+    <p class="promo-sub">追蹤我們獲取更多學習資源</p>
+    <div class="promo-social">
+      <a class="promo-btn promo-threads" href="https://www.threads.com/@pea_programming" target="_blank" rel="noopener">Threads</a>
+      <a class="promo-btn promo-ig" href="https://www.instagram.com/pea_programming/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </div>
 
   <form id="quizForm"></form>
 
@@ -202,9 +279,11 @@
     <button type="button" id="retryBtn">重新作答</button>
   </div>
 
-  <footer>Python 觀念小測驗 · 純靜態網頁，無需後端</footer>
+  <footer>豌豆APCS程式教育</footer>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
 <script>
 const questions = [
   {
@@ -222,10 +301,10 @@ const questions = [
     code: `print(-7 // 2, -7 % 2)`,
     options: ["-3 -1", "-4 1", "-3 1", "-4 -1"],
     answer: 1,
-    explain: `Python 的 <code>//</code> 是「向負無窮取整」（floor），不是無條件捨去。<br>
-      <code>-7 / 2 = -3.5</code>，向下取整為 <code>-4</code>，所以 <code>-7 // 2 = -4</code>。<br>
-      餘數公式為 <code>a - (a // b) * b</code>：<code>-7 - (-4 * 2) = -7 + 8 = 1</code>，所以 <code>-7 % 2 = 1</code>。<br>
-      Python 的餘數符號一律跟「除數」相同（除數為正，餘數也為正）。`
+    explain: `重點：只要「除數」是正的，Python 的 <code>%</code> 餘數結果「永遠是正的」（不會是負數）。<br>
+      這跟 C/Java 不一樣——那些語言的餘數符號會跟著「被除數」走，例如 C 語言 <code>-7 % 2</code> 會得到 <code>-1</code>。<br>
+      Python 的規則是：餘數符號永遠跟「除數」一致。這裡除數 <code>2</code> 是正的，所以餘數只能是 <code>0</code> 或 <code>1</code>，絕不會是負數。<br>
+      驗算：<code>-7 // 2 = -4</code>（向負無窮取整，不是無條件捨去），再用 <code>a - (a // b) * b</code> 算餘數：<code>-7 - (-4 * 2) = -7 + 8 = 1</code>，所以 <code>-7 % 2 = 1</code>。`
   },
   {
     title: "以下程式的執行結果的型態為何？",
@@ -248,14 +327,15 @@ def change_global():
     x = 2
 
 change()
-print(x)
+print(x, end=' ')
 change_global()
-print(x)`,
-    options: ["1  1", "1  2", "2  2", "2  1"],
+print(x, end=' ')`,
+    options: ["1 1", "1 2", "2 2", "2 1"],
     answer: 1,
-    explain: `<code>change()</code> 內的 <code>x = 2</code> 會建立一個「區域變數」x，不會影響全域的 x，所以呼叫後 <code>print(x)</code> 仍是 <code>1</code>。<br>
-      <code>change_global()</code> 內宣告了 <code>global x</code>，表示要修改的是全域變數 x，所以呼叫後全域 x 變成 <code>2</code>。<br>
-      因此輸出依序為 <code>1</code> 和 <code>2</code>。`
+    explain: `<code>change()</code> 內的 <code>x = 2</code> 會建立一個「區域變數」x，不會影響全域的 x，所以呼叫後第一個 <code>print(x)</code> 仍是 <code>1</code>。<br>
+      <code>change_global()</code> 內宣告了 <code>global x</code>，表示要修改的是全域變數 x，所以呼叫後第二個 <code>print(x)</code> 變成 <code>2</code>。<br>
+      注意：<code>print()</code> 預設結尾是換行（<code>end='\\n'</code>），這裡把它改成 <code>end=' '</code>，代表印完後面接一個空格而不是換行，所以兩次 <code>print(x)</code> 的結果會印在「同一行」，中間用空格隔開。<br>
+      因此輸出依序為 <code>1</code> 和 <code>2</code>，畫面上顯示為一行 <code>1 2</code>。`
   },
   {
     title: "以下程式執行後，a 的值為何？",
@@ -276,17 +356,21 @@ print(a)`,
   {
     title: "以下程式執行後，a 的值為何？",
     code: `def modify(lst):
-    lst.append(4)
+    lst[0] = 99
 
 a = [1, 2, 3]
 modify(a)
 print(a)`,
-    options: ["[1, 2, 3]", "[1, 2, 3, 4]", "[4]", "Error"],
+    options: ["[1, 2, 3]", "[99, 2, 3]", "[1, 2, 99]", "Error"],
     answer: 1,
     explain: `<code>list</code> 是可變（mutable）型態。<br>
-      呼叫 <code>modify(a)</code> 時，參數 lst 綁定到與 a 相同的 list 物件（傳的是參考）。<br>
-      函式內 <code>lst.append(4)</code> 是「就地修改」該物件的內容，不是重新賦值，所以外部的 a 也會被改變。<br>
-      因此結果為 <code>[1, 2, 3, 4]</code>。`
+      呼叫 <code>modify(a)</code> 時，參數 lst 綁定到與 a 「相同」的 list 物件（傳的是參考，不是複製一份）。<br>
+      函式內 <code>lst[0] = 99</code> 是直接修改該物件索引 0 的內容，屬於「就地修改」，不是把 lst 重新指向新物件，所以外部的 a 也會被改變。<br>
+      因此結果為 <code>[99, 2, 3]</code>。<br><br>
+      <b>常見型態的可變（mutable）／不可變（immutable）整理：</b><br>
+      可變：<code>list</code>、<code>dict</code>、<code>set</code><br>
+      不可變：<code>int</code>、<code>float</code>、<code>bool</code>、<code>str</code>、<code>tuple</code><br>
+      傳入函式時，不可變型態的參數在函式內重新賦值不會影響外部變數；可變型態若在函式內「就地修改」（如 <code>lst[i]=</code>、<code>.append()</code>、<code>.sort()</code>），則會影響外部變數。`
   },
   {
     title: "若使用者輸入 6，以下程式的輸出為何？",
@@ -300,13 +384,25 @@ print(n * 3)`,
   },
   {
     title: "以下程式的執行結果為何？",
-    code: `lst = [10, 20, 30, 40, 50]
-print(lst[3:4])`,
-    options: ["40", "[40]", "[30, 40]", "IndexError"],
-    answer: 1,
-    explain: `切片（slice）語法 <code>[start:stop]</code> 的結果「永遠是一個 list（子序列）」，即使裡面只有一個元素，也不會自動拆成單一值。<br>
-      <code>lst[3:4]</code> 表示取索引 3（含）到索引 4（不含）之間的元素，也就是只有索引 3 的元素 <code>40</code>，但包裝成 list。<br>
-      因此結果是 <code>[40]</code>，不是 <code>40</code>。若要取出單一值需用 <code>lst[3]</code>。`
+    code: `s = "Christmas"
+print(s[1:4])`,
+    options: ["'hri'", "'Chri'", "'hris'", "'ris'"],
+    answer: 0,
+    explain: `字串索引從 0 開始：<code>C(0) h(1) r(2) i(3) s(4) t(5) m(6) a(7) s(8)</code>。<br>
+      切片語法 <code>[start:stop]</code> 的規則是「包含 start，不包含 stop」，長度剛好是 <code>stop - start</code>。<br>
+      <code>s[1:4]</code> 表示從索引 1 取到索引 3（因為 4 不包含），也就是 <code>h, r, i</code> 三個字元。<br>
+      因此結果是 <code>'hri'</code>，長度為 <code>4 - 1 = 3</code>。`
+  },
+  {
+    title: "以下程式的執行結果為何？",
+    code: `s = "Christmas"
+print(s[2:-3])`,
+    options: ["'rist'", "'ristm'", "'ris'", "'istma'"],
+    answer: 0,
+    explain: `負數索引代表「從字串尾端數回來」：<code>-1</code> 是最後一個字元，<code>-2</code> 是倒數第二個，以此類推。<br>
+      <code>s = "Christmas"</code> 長度為 9，索引對照：<code>C(0) h(1) r(2) i(3) s(4) t(5) m(6) a(7) s(8)</code>，也可以寫成 <code>C(-9) h(-8) r(-7) i(-6) s(-5) t(-4) m(-3) a(-2) s(-1)</code>。<br>
+      所以 <code>-3</code> 對應的是索引 6（字元 <code>m</code>），跟切片一樣「包含 start，不包含 stop」，所以 <code>s[2:-3]</code> 是從索引 2 取到索引 5（不含索引 6），也就是 <code>r, i, s, t</code>。<br>
+      因此結果是 <code>'rist'</code>。負數索引和正數索引可以混用，重點是先換算成實際的正數索引位置，再套用「包含 start、不包含 stop」的規則。`
   }
 ];
 
@@ -314,6 +410,7 @@ const form = document.getElementById('quizForm');
 const scoreBox = document.getElementById('score');
 const submitBtn = document.getElementById('submitBtn');
 const retryBtn = document.getElementById('retryBtn');
+const promo = document.getElementById('promo');
 const letters = ['A', 'B', 'C', 'D'];
 
 function render() {
@@ -331,8 +428,12 @@ function render() {
     if (q.code) {
       const pre = document.createElement('pre');
       pre.className = 'code';
-      pre.textContent = q.code;
+      const codeEl = document.createElement('code');
+      codeEl.className = 'language-python';
+      codeEl.textContent = q.code;
+      pre.appendChild(codeEl);
       card.appendChild(pre);
+      if (window.hljs) hljs.highlightElement(codeEl);
     }
 
     const fieldset = document.createElement('fieldset');
@@ -340,8 +441,11 @@ function render() {
     q.options.forEach((opt, oi) => {
       const label = document.createElement('label');
       label.className = 'option';
+      const optHtml = opt.includes('\n')
+        ? `<span class="console">${opt.split('\n').join('<br>')}</span>`
+        : opt;
       label.innerHTML = `<input type="radio" name="q${qi}" value="${oi}">
-        <span>${letters[oi]}. ${opt}</span>`;
+        <span>${letters[oi]}. ${optHtml}</span>`;
       fieldset.appendChild(label);
     });
     card.appendChild(fieldset);
@@ -396,6 +500,7 @@ function grade() {
 
   submitBtn.style.display = 'none';
   retryBtn.style.display = 'inline-block';
+  promo.classList.add('show');
 }
 
 submitBtn.addEventListener('click', grade);
@@ -403,6 +508,7 @@ retryBtn.addEventListener('click', () => {
   scoreBox.style.display = 'none';
   submitBtn.style.display = 'inline-block';
   retryBtn.style.display = 'none';
+  promo.classList.remove('show');
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
